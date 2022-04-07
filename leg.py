@@ -41,34 +41,24 @@ class leg:
     def move(self, x, y, z=0):
         Start = time.time()
 
-        b_x = 1
-        b_y = 1
-        for i, a in enumerate(np.linspace(-np.pi / 2, np.pi / 2, 181)):
-            for j, b in enumerate(np.linspace(-np.pi / 2, np.pi / 2, 181)):
-                x_f = self.leg_solves_x[i, j]
-                y_f = self.leg_solves_y[i, j]
-                if abs(x_f - x) < 0.1 * (self.l1 + self.l2) and abs(y_f - y) < 0.1 * (self.y0 + self.l2):
-                    if b_x**2 + b_y**2 > abs(x_f - x)**2 + abs(y_f - y)**2:
-                        b_x = abs(x_f - x)
-                        b_y = abs(y_f - y)
+        d_x = self.leg_solves_x - x
+        d_y = self.leg_solves_y - y
+        d_xy = d_x**2 + d_y**2
+        min_ind = np.unravel_index(np.argmin(d_xy), d_xy.shape)
+        a, b = min_ind
 
-                        print('b')
-                        f_a = a
-                        f_b = b
-
-                        x_ff = x_f
-                        y_ff = y_f
-                        break
-
+        print('a, b: ', a, b)
         print(time.time() - Start)
 
         if self.f_test:
             plt.scatter(x, y)
-            plt.scatter(x_ff, y_ff)
+            plt.scatter(self.leg_solves_x[a, b], self.leg_solves_y[a, b])
+            plt.xlim([-1, 1])
+            plt.ylim([-1, 1])
             plt.show()
 
-        self.servo_ang_1 = self.servo_angles[self.name + '1'] + int(f_a * 180 / np.pi) + 90
-        self.servo_ang_2 = self.servo_angles[self.name + '2'] + int(f_b * 180 / np.pi) + 90
+        self.servo_ang_1 = self.servo_angles[self.name + '1'] + a - 90
+        self.servo_ang_2 = self.servo_angles[self.name + '2'] + b - 90
         self.servo_ang_3 = self.servo_angles[self.name + '3']
 
         print(self.servo_ang_1)
