@@ -1,5 +1,6 @@
 import numpy as np
 import pickle
+import matplotlib.pyplot as plt
 
 l1 = 1
 l2 = 1
@@ -24,3 +25,5 @@ with open('leg_solve_y.pickle', 'wb') as f:
     pickle.dump(leg_solves_y, f)
 
 print(leg_solves_x, leg_solves_y)
+plt.plot(leg_solves_x[80], leg_solves_y[80])
+plt.show()
