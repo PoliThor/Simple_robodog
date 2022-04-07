@@ -4,6 +4,7 @@ import pickle
 import time
 from sympy import Symbol, solve, Eq
 import matplotlib.pyplot as plt
+from math import floor
 
 class leg:
     def set_servos(self):
@@ -43,12 +44,15 @@ class leg:
     def move(self, x, y, z=0):
         Start = time.time()
 
+        x = float(x)
+        y = float(y)
+
         d_x = self.leg_solves_x - x
         d_y = self.leg_solves_y - y
         d_xy = d_x**2 + d_y**2
         a, b = np.unravel_index(np.argmin(d_xy), d_xy.shape)
 
-        print(time.time() - Start)
+        print('move time: ', time.time() - Start)
         print('a, b: ', a, b)
 
         if self.f_test:
@@ -76,18 +80,25 @@ class leg:
 
     def elips_init(self, t, coif_a, coif_b, speed):
         self.t0 = t
-        self.elips_a = coif_a
-        self.elips_b = coif_b
+        self.el_coif_a = coif_a
+        self.el_coif_b = coif_b
         self.speed = speed
+        self.elips_a = Symbol('a')
+        self.elips_b = Symbol('b')
         self.sym_y = Symbol('y')
         self.sym_x = Symbol('x')
-        self.eq_y = Eq((self.sym_y - self.elips_b)**2, self.elips_a**2 - self.sym_x**2 * self.elips_a**2 / self.elips_b**2)
+        eq_y = Eq((self.sym_y - self.elips_b)**2, self.elips_a**2 - self.sym_x**2 * self.elips_a**2 / self.elips_b**2)
+        self.s1, self.s2 = solve(eq_y, self.sym_y)
 
-    def elips_step(self, t):  # t = 0.5 is half of sicle
+    def elips_step(self, t):  # ep. t = 0.5 is half of sicle
         S = time.time()
+
         x = self.speed * np.sin(2 * np.pi * (t + self.t0) / 2)
-        eq = self.eq_y.subs(self.sym_x, x)
-        y = solve(eq)[0]
-        self.move(x, y)
-        print(time.time() - S)
+        t = t - floor(t)
+        if t >= 0.25 and t <= 0.75:
+            y = self.el_coif_a*np.sqrt(self.el_coif_b**2 - x**2)/self.el_coif_b + self.el_coif_b
+        else:
+            y = -self.el_coif_a*np.sqrt(self.el_coif_b**2 - x**2)/self.el_coif_b + self.el_coif_b
         print(x, y)
+        print(time.time() - S)
+        self.move(x, y)
