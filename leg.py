@@ -3,8 +3,6 @@ import numpy as np
 import pickle
 import time
 import matplotlib.pyplot as plt
-import pdb
-
 
 class leg:
     def set_servos(self):

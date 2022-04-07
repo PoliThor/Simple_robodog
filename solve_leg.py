@@ -2,6 +2,9 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 
+
+a0 = 0
+b0 = 0
 l1 = 1
 l2 = 1
 y0 = l1 + l2
