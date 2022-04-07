@@ -29,6 +29,16 @@ try:
 except FileNotFoundError:
     colibration_coif = {}
 
+try:
+    with open('servo_inv.pickle', 'rb') as f:
+        servo_inv = pickle.load(f)
+    print('coif load')
+    print('servo inv: ', servo_inv)
+except FileNotFoundError:
+    servo_inv = {}
+    for name in servos:
+        servo_inv[name] = 1
+
 servo_angles = {}
 for n in servos:
     if n in colibration_coif.keys():
@@ -39,9 +49,13 @@ for n in servos:
 
 print(servo_angles)
 
-FL = leg(kit, servos, servo_angles, a0, b0, l1, l2, name='FL')
-FR = leg(kit, servos, servo_angles, a0, b0, l1, l2, name='FR')
-RL = leg(kit, servos, servo_angles, a0, b0, l1, l2, name='RL')
-RR = leg(kit, servos, servo_angles, a0, b0, l1, l2, name='RR')
+FL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='FL')
+FR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='FR')
+RL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='RL')
+RR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='RR')
 
-FL.move(0.3, 0.3)
+
+#FL.move(0.3, 0.3)
+
+FL.elips_init(0, 0.5, 0.5, 0.1)
+FL.elips_step(0.1)

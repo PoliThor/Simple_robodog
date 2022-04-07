@@ -2,26 +2,28 @@ from __future__ import division
 import numpy as np
 import pickle
 import time
+from sympy import Symbol, solve, Eq
 import matplotlib.pyplot as plt
 
 class leg:
     def set_servos(self):
         if self.f_test == False:
-            self.kit.servo[self.servos[self.sp1]].angle = self.servo_ang_1
-            self.kit.servo[self.servos[self.sp2]].angle = self.servo_ang_2
-            self.kit.servo[self.servos[self.sp3]].angle = self.servo_ang_3
+            self.kit.servo[self.servos[self.sp1]].angle = self.servo_ang_1 * self.servo_inv[self.name + '1']
+            self.kit.servo[self.servos[self.sp2]].angle = self.servo_ang_2 * self.servo_inv[self.name + '2']
+            self.kit.servo[self.servos[self.sp3]].angle = self.servo_ang_3 * self.servo_inv[self.name + '3']
 
-    def __init__(self, kit, servos, servo_angles, a0, b0, l1, l2, name, f_test=True):
+    def __init__(self, kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name, f_test=True):
         self.f_test = f_test
         self.kit = kit
         self.servo_angles = servo_angles
+        self.servo_inv = servo_inv
         self.servos = servos
         self.name = name
         self.a0 = a0
         self.b0 = b0
         self.l1 = l1
         self.l2 = l2
-        self.y0 = l1 + l2 # change
+        self.y0 = l1 + l2  # change
 
         with open('leg_solve_x.pickle', 'rb') as f:
             self.leg_solves_x = pickle.load(f)
@@ -71,3 +73,21 @@ class leg:
         self.servo_ang_3 = self.servo_angles[self.name + '3']
 
         self.set_servos()
+
+    def elips_init(self, t, coif_a, coif_b, speed):
+        self.t0 = t
+        self.elips_a = coif_a
+        self.elips_b = coif_b
+        self.speed = speed
+        self.sym_y = Symbol('y')
+        self.sym_x = Symbol('x')
+        self.eq_y = Eq((self.sym_y - self.elips_b)**2, self.elips_a**2 - self.sym_x**2 * self.elips_a**2 / self.elips_b**2)
+
+    def elips_step(self, t):  # t = 0.5 is half of sicle
+        S = time.time()
+        x = self.speed * np.sin(2 * np.pi * (t + self.t0) / 2)
+        eq = self.eq_y.subs(self.sym_x, x)
+        y = solve(eq)[0]
+        self.move(x, y)
+        print(time.time() - S)
+        print(x, y)
