@@ -8,6 +8,17 @@ servos = {'RR1': 1, 'RR2': 2, 'RR3': 3, 'RL3': 7, 'RL2': 6, 'RL1': 5, 'FR3': 9, 
           'FR1': 11, 'FL2': 13, 'FL3': 14, 'FL1': 15}
 
 try:
+    with open('servo_inv.pickle', 'rb') as f:
+        servo_inv = pickle.load(f)
+    print('coif load')
+    print('servo inv: ', servo_inv)
+except FileNotFoundError:
+    servo_inv = {}
+    for name in servos:
+        servo_inv[name] = 1
+
+
+try:
     with open('colib_coif.pickle', 'rb') as f:
         colibration_coif = pickle.load(f)
     print('coif load')
@@ -25,21 +36,31 @@ for n in servos:
 print(servo_angles)
 
 while True:
-    name = input('servo mane: ')
+    name = input('servo name: ')
     if name == '':
         break
     while True:
         ang = input('angle: ')
         if ang == '':
             break
+        elif ang == 'i':
+            if servo_inv[name] == 1:
+                servo_inv[name] = -1
+            else:
+                servo_inv[name] = 1
+            kit.servo[servos[name]].angle = servo_angles[name] * servo_inv[name]
         else:
             if name not in colibration_coif.keys():
                 colibration_coif[name] = int(ang)
             colibration_coif[name] += int(ang)
             servo_angles[name] += int(ang) 
-            kit.servo[servos[name]].angle=servo_angles[name]
+            kit.servo[servos[name]].angle = servo_angles[name] * servo_inv[name]
 
 print(colibration_coif)
+print(servo_inv)
 
 with open('colib_coif.pickle', 'wb') as f:
     pickle.dump(colibration_coif, f)
+
+with open('servo_inv.pickle', 'wb') as f:
+    pickle.dump(servo_inv, f)

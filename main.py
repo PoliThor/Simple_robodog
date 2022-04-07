@@ -44,4 +44,4 @@ FR = leg(kit, servos, servo_angles, a0, b0, l1, l2, name='FR')
 RL = leg(kit, servos, servo_angles, a0, b0, l1, l2, name='RL')
 RR = leg(kit, servos, servo_angles, a0, b0, l1, l2, name='RR')
 
-FL.move(0.1, 0.1)
+FL.move(0.3, 0.3)

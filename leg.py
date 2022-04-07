@@ -44,11 +44,10 @@ class leg:
         d_x = self.leg_solves_x - x
         d_y = self.leg_solves_y - y
         d_xy = d_x**2 + d_y**2
-        min_ind = np.unravel_index(np.argmin(d_xy), d_xy.shape)
-        a, b = min_ind
+        a, b = np.unravel_index(np.argmin(d_xy), d_xy.shape)
 
-        print('a, b: ', a, b)
         print(time.time() - Start)
+        print('a, b: ', a, b)
 
         if self.f_test:
             plt.scatter(x, y)
