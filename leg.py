@@ -14,6 +14,8 @@ class leg:
             self.kit.servo[self.servos[self.sp3]].angle = self.servo_ang_3 * self.servo_inv[self.name + '3']
 
     def __init__(self, kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name, f_test=True):
+        self.plot_x = []
+        self.plot_y = []
         self.f_test = f_test
         self.kit = kit
         self.servo_angles = servo_angles
@@ -55,19 +57,14 @@ class leg:
         print('move time: ', time.time() - Start)
         print('a, b: ', a, b)
 
-        if self.f_test:
-            plt.scatter(x, y)
-            plt.scatter(self.leg_solves_x[a, b], self.leg_solves_y[a, b])
-            plt.xlim([-1, 1])
-            plt.ylim([-1, 1])
-            plt.show()
-
         self.servo_ang_1 = self.servo_angles[self.name + '1'] + a - 90
         self.servo_ang_2 = self.servo_angles[self.name + '2'] + b - 90
         self.servo_ang_3 = self.servo_angles[self.name + '3']
 
         print(self.servo_ang_1)
         print(self.servo_ang_2)
+        self.plot_x.append(x)
+        self.plot_y.append(y)
 
         self.set_servos()
 
@@ -96,7 +93,7 @@ class leg:
 
         S = time.time()
 
-        x = self.speed * np.sin(2 * np.pi * t / 2)
+        x = self.speed * np.sin(2 * np.pi * t)
         t = t - floor(t)
         if t >= 0.25 and t <= 0.75:
             y = self.el_coif_a*np.sqrt(self.el_coif_b**2 - x**2)/self.el_coif_b + self.el_coif_b
