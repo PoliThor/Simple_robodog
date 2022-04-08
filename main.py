@@ -57,5 +57,5 @@ RR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='RR')
 
 #FL.move(0.3, 0.3)
 
-FL.elips_init(0, 0.5, 0.5, 1)
+FL.elips_init(0.5, 0.5, 1)
 FL.elips_step(0)

@@ -78,8 +78,7 @@ class leg:
 
         self.set_servos()
 
-    def elips_init(self, t, coif_a, coif_b, speed):
-        self.t0 = t
+    def elips_init(self, coif_a, coif_b, speed):
         self.el_coif_a = coif_a
         self.el_coif_b = coif_b
         self.speed = speed
@@ -90,10 +89,14 @@ class leg:
         eq_y = Eq((self.sym_y - self.elips_b)**2, self.elips_a**2 - self.sym_x**2 * self.elips_a**2 / self.elips_b**2)
         self.s1, self.s2 = solve(eq_y, self.sym_y)
 
-    def elips_step(self, t):  # ep. t = 0.5 is half of sicle
+    def elips_step(self, t,  coif_a=None, coif_b=None, speed=None):  # ep. t = 0.5 is half of sicle
+        if coif_a != None: self.el_coif_a = coif_a
+        if coif_b != None: self.el_coif_b = coif_b
+        if speed != None: self.speed = speed
+
         S = time.time()
 
-        x = self.speed * np.sin(2 * np.pi * (t + self.t0) / 2)
+        x = self.speed * np.sin(2 * np.pi * t / 2)
         t = t - floor(t)
         if t >= 0.25 and t <= 0.75:
             y = self.el_coif_a*np.sqrt(self.el_coif_b**2 - x**2)/self.el_coif_b + self.el_coif_b
