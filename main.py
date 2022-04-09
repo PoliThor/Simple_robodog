@@ -6,8 +6,9 @@ from leg import leg
 f_test = True
 
 # constants in mm
-l1 = 1
-l2 = 1
+l0 = 50
+l1 = 98
+l2 = 126
 a0 = 0
 b0 = 0
 
@@ -49,15 +50,15 @@ for n in servos:
 
 print(servo_angles)
 
-FL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='FL')
-FR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='FR')
-RL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='RL')
-RR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='RR')
+FL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l0, l1, l2, name='FL')
+FR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l0, l1, l2, name='FR')
+RL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l0, l1, l2, name='RL')
+RR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l0, l1, l2, name='RR')
 
 
 #FL.move(0.3, 0.3)
 
-"""
+
 FL.elips_init(1, 1, 1)
 for i in range(200):
     FL.elips_step(i / 100)
@@ -65,4 +66,3 @@ for i in range(200):
 print(FL.plot_x, FL.plot_y)
 plt.scatter(FL.plot_x, FL.plot_y)
 plt.show()
-"""
