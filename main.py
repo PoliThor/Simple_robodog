@@ -6,8 +6,9 @@ from leg import leg
 f_test = True
 
 # constants in mm
-l1 = 1
-l2 = 1
+l0 = 50
+l1 = 98
+l2 = 126
 a0 = 0
 b0 = 0
 
@@ -49,13 +50,13 @@ for n in servos:
 
 print(servo_angles)
 
-FL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='FL')
-FR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='FR')
-RL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='RL')
-RR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l1, l2, name='RR')
+FL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l0, l1, l2, 'FL', f_test)
+FR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l0, l1, l2, 'FR', f_test)
+RL = leg(kit, servos, servo_angles, servo_inv, a0, b0, l0, l1, l2, 'RL', f_test)
+RR = leg(kit, servos, servo_angles, servo_inv, a0, b0, l0, l1, l2, 'RR', f_test)
 
 
-#FL.move(0.3, 0.3)
+#FL.move(10, 20)
 
 """
 FL.elips_init(1, 1, 1)
@@ -65,4 +66,85 @@ for i in range(200):
 print(FL.plot_x, FL.plot_y)
 plt.scatter(FL.plot_x, FL.plot_y)
 plt.show()
+"""
+
+# derect move for gagarinskie ctenia
+
+t = 0.8 # time in s
+
+for _ in range(80):
+    FL.direct_move(1, 0)
+    FR.direct_move(1, 0)
+    time.sleep(t / 80)
+time.sleep(1)
+for _ in range(80):
+    RR.direct_move(0, 1, 0)
+    time.sleep(t / 80)
+time.sleep(3)
+for _ in range(80):
+    RR.direct_move(0, -1, 0)
+    time.sleep(t / 80)
+
+for _ in range(80):
+    RL.direct_move(1, 0)
+    RR.direct_move(1, 0)
+    time.sleep(t / 80)
+
+for _ in range(80):
+    FL.direct_move(-1, 0)
+    FR.direct_move(-1, 0)
+    time.sleep(t / 80 / 2.5)
+
+for _ in range(80):
+    RL.direct_move(-1, 0)
+    RR.direct_move(-1, 0)
+    time.sleep(t / 80 / 2.5)
+
+
+ang = 50
+for _ in range(ang):
+    RR.direct_move(0, 0, 1)
+    FR.direct_move(0, 0, 1)
+    RL.direct_move(0, 0, -1)
+    FL.direct_move(0, 0, -1)
+    time.sleep(t / ang / 6)
+
+for _ in range(ang):
+    RR.direct_move(0, 0, -1)
+    FR.direct_move(0, 0, -1)
+    RL.direct_move(0, 0, 1)
+    FL.direct_move(0, 0, 1)
+    time.sleep(t / ang / 6)
+
+for _ in range(ang):
+    RR.direct_move(0, 0, -1)
+    FR.direct_move(0, 0, -1)
+    RL.direct_move(0, 0, 1)
+    FL.direct_move(0, 0, 1)
+    time.sleep(t / ang / 6)
+
+for _ in range(ang):
+    RR.direct_move(0, 0, 1)
+    FR.direct_move(0, 0, 1)
+    RL.direct_move(0, 0, -1)
+    FL.direct_move(0, 0, -1)
+    time.sleep(t / ang / 6)
+
+
+"""
+# go
+# 1 step
+for _ in range(50):
+    RR.direct_move(-1, 1)
+    FL.direct_move(-1, 1.5)
+    time.sleep(t / 50)
+# all ff
+for _ in range(30):
+    RR.direct_move(0, 1)
+    FL.direct_move(0, 1)
+
+    RL.direct_move(0, 1)
+    FR.direct_move(0, 1)
+    time.sleep(t / 30)
+# 2 step
 """
