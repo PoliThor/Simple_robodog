@@ -18,8 +18,8 @@ class leg:
                 l = list(range(90, -100, -1))
                 ang = 90 + l.index(ang)
         return ang
+        
     @staticmethod
-
     def restr_ang(ang):
         if ang > 180:
             ang = 180
